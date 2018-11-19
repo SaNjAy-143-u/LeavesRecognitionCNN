@@ -1,6 +1,6 @@
 # LeavesRecognitionCNN
 
-This is and implementation of Research paper [A Convolutional Neural Network for Leaves Recognition Using Data Augmentation]
+This is an implementation of paper [A Convolutional Neural Network for Leaves Recognition Using Data Augmentation]
 (https://ieeexplore.ieee.org/document/7363364).
 
 #### Prerequisites
@@ -18,6 +18,5 @@ python main-run.py --numEpochs 100 \
 --noOfLayers 5\
 --lossfn 'categorical_crossentropy'\
 --outDir 'outData'\
---inpDir None\
+--inpDir './data'\
 ```
-if you put inpDir as None then put dataset in data folder in the project.
