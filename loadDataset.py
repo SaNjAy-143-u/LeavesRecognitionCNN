@@ -7,13 +7,14 @@ from keras.utils import np_utils
 from keras import backend as K
 K.set_image_dim_ordering('tf')
 from sklearn.utils import shuffle
+from keras.preprocessing.image import ImageDataGenerator
 from sklearn.cross_validation import train_test_split
 
 class loadDataset(object):
 	def __init__(self,tp):
 		pass
 	@staticmethod
-	def getData(inp_path,img_size,num_channel=1):
+	def getData(inp_path,img_size,testing=False,num_channel=1):
 		if(inp_path==None):
 			PATH = os.getcwd()
 			data_path = PATH + '/data'
@@ -81,7 +82,11 @@ class loadDataset(object):
 				print (img_data.shape)
 
 		images,labels = shuffle(img_data,Y)
+		if testing:
+			X_test,y_test=images,labels
+			X_train,y_train=None,None
 		X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
+
 		return  X_train, X_test, y_train, y_test,32
 
 

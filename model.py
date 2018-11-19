@@ -33,12 +33,16 @@ class model(object):
 		self.model.compile(loss=lossfn, optimizer=sgd,metrics=["accuracy"])
 
 	
-	def forward(self,X_train,y_train,X_test,y_test,batch_size,epoch,verbose=1,plt=False,loadModel=False,saveModel=True,outDir="./"):
+	def forward(self,X_train,y_train,X_test,y_test,batch_size,epoch,verbose=1,Plot=False,loadModel=None,saveModel=True,outDir="./"):
 		if loadModel:
-			self.model=load_model(outDir+'model.hdf5')
+			self.model=load_model(loadModel)
+			self.score = self.model.evaluate(X_test, y_test, verbose=0)
+			print('Test Loss:', self.score[0])
+			print('Test accuracy:', self.score[1])
+
 		else:
-			self.hist = self.model.fit(X_train, y_train, batch_size=batch_size, nb_epoch=epoch, verbose=verbose, validation_split=0.2)
-			if (plt):
+			self.hist = self.model.fit(X_train, y_train, batch_size=batch_size, epochs=epoch, verbose=verbose, validation_split=0.2)
+			if (Plot):
 				train_loss=self.hist.history['loss']
 				val_loss=self.hist.history['val_loss']
 				train_acc=self.hist.history['acc']
@@ -66,14 +70,15 @@ class model(object):
 				plt.legend(['train','val'],loc=4)
 				#print plt.style.available # use bmh, classic,ggplot for big pictures
 				plt.style.use(['classic'])
+				plt.show()
 
-		self.score = self.model.evaluate(X_test, y_test, show_accuracy=True, verbose=0)
+		self.score = self.model.evaluate(X_test, y_test, verbose=0)
 		print('Test Loss:', self.score[0])
 		print('Test accuracy:', self.score[1])
 
 
-		if save_model:
-			model.save('model.hdf5')
+		if saveModel:
+			self.model.save(outDir+'model.hdf5')
 		
 
 
