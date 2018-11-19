@@ -9,7 +9,7 @@ This is and implementation of Research paper [A Convolutional Neural Network for
 #### Running
 
 ```
-python main-run-vr.py --numEpochs 100 \
+python main-run.py --numEpochs 100 \
 --imgSize (256,256) \
 --momentum 0.9 \
 --decay 0.06 \
