@@ -12,7 +12,7 @@ from keras.layers import BatchNormalization
 from keras.optimizers import SGD,RMSprop,adam
 
 class model(object):
-	def __init__(self,num_classes,num_layers,input_shape,momentum,lossfn,opti,decay,lr):	
+	def __init__(self,num_classes,num_layers,input_shape,momentum,lossfn,decay,lr):	
 		self.model=Sequential();
 		self.model.add(Convolution2D(32, (5,5),border_mode='same',input_shape=input_shape))
 		self.model.add(PReLU(weights=None, alpha_initializer="zero"))
