@@ -14,7 +14,7 @@ class loadDataset(object):
 	def __init__(self,tp):
 		pass
 	@staticmethod
-	def getData(inp_path,img_size,testing=False,num_channel=1):
+	def getData(inp_path,img_size,dataAug,testing,num_channel=1):
 		if(inp_path==None):
 			PATH = os.getcwd()
 			data_path = PATH + '/data'
@@ -68,6 +68,10 @@ class loadDataset(object):
 		img_data = img_data.astype('float32')
 		img_data /= 255
 		Y = np_utils.to_categorical(label_list, 32)
+		if dataAug:
+			datagen = ImageDataGenerator(featurewise_center=True,featurewise_std_normalization=True,rotation_range=20,width_shift_range=0.2,height_shift_range=0.2,horizontal_flip=True)
+		else:
+			datagen=None
 		if num_channel==1:
 			if K.image_dim_ordering()=='th':
 				img_data= np.expand_dims(img_data, axis=1) 
@@ -85,9 +89,10 @@ class loadDataset(object):
 		if testing:
 			X_test,y_test=images,labels
 			X_train,y_train=None,None
-		X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
+		else:
+			X_train, X_test, y_train, y_test = train_test_split(images, labels, test_size=0.2)
 
-		return  X_train, X_test, y_train, y_test,32
+		return  datagen,X_train, X_test, y_train, y_test,32
 
 
 

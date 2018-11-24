@@ -22,6 +22,8 @@ python main-run.py --numEpochs 100 \
 --inpDir './data'\
 --loadModel None \
 --plot True\
+--noOfWorkers 4\
+--dataAug True
 
 
 This saves the trained model in specified output directory and plots different training metrics.
@@ -40,6 +42,8 @@ python main-run.py --numEpochs 100 \
 --inpDir './data'\
 --loadModel 'Datamodel.hdf5'\
 --plot True\
+--noOfWorkers 4\
+--dataAug True
 
 This loads the specified model and prints test loss and accuracy.
 ```

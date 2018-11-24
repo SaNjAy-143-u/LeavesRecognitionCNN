@@ -10,6 +10,8 @@ from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
 from keras.layers import BatchNormalization 
 from keras.optimizers import SGD,RMSprop,adam
+from sklearn.cross_validation import train_test_split
+
 
 class model(object):
 	def __init__(self,num_classes,num_layers,input_shape,momentum,lossfn,decay,lr):	
@@ -33,7 +35,7 @@ class model(object):
 		self.model.compile(loss=lossfn, optimizer=sgd,metrics=["accuracy"])
 
 	
-	def forward(self,X_train,y_train,X_test,y_test,batch_size,epoch,verbose=1,Plot=False,loadModel=None,saveModel=True,outDir="./"):
+	def forward(self,X_train,y_train,X_test,y_test,batch_size,epoch,datagen,noOfWorkers,verbose=1,Plot=False,loadModel=None,saveModel=True,outDir="./"):
 		if loadModel:
 			self.model=load_model(loadModel)
 			self.score = self.model.evaluate(X_test, y_test, verbose=0)
@@ -41,7 +43,12 @@ class model(object):
 			print('Test accuracy:', self.score[1])
 
 		else:
-			self.hist = self.model.fit(X_train, y_train, batch_size=batch_size, epochs=epoch, verbose=verbose, validation_split=0.2)
+			if datagen:
+				X_train,X_val,y_train,y_val=train_test_split(X_train,y_train,test_size=0.25)
+				datagen.fit(X_train,augment=True)
+				self.hist = self.model.fit_generator(datagen.flow(X_train, y_train, batch_size=batch_size),steps_per_epoch=len(X_train) / 32 ,validation_data=(X_val,y_val),epochs=epoch, verbose=verbose,workers=noOfWorkers,shuffle=True,use_multiprocessing=True,)
+			else:
+				self.hist = self.model.fit(X_train, y_train, batch_size=batch_size, epochs=epoch, verbose=verbose, validation_split=0.25)
 			if (Plot):
 				train_loss=self.hist.history['loss']
 				val_loss=self.hist.history['val_loss']

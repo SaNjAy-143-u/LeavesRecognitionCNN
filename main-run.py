@@ -2,10 +2,10 @@ import argparse
 import model
 import loadDataset
 
-def main_run(inp_path,outDir,img_size,momentum,lossfn,batchSize,numEpochs,noOfLayers,decay,learnRate,loadModel,plot):
-    X_train,X_test,Y_train,Y_test,numClasses=loadDataset.loadDataset.getData(inp_path,img_size,loadModel,num_channel=1)
+def main_run(inp_path,outDir,img_size,momentum,lossfn,batchSize,numEpochs,noOfLayers,noOfWorkers,decay,learnRate,loadModel,plot,dataAug):
+    datagen,X_train,X_test,Y_train,Y_test,numClasses=loadDataset.loadDataset.getData(inp_path,img_size,dataAug,loadModel)
     model_obj=model.model(numClasses,noOfLayers,X_train[0].shape,momentum,lossfn,decay,learnRate)
-    model_obj.forward(X_train,Y_train,X_test,Y_test,batchSize,numEpochs,outDir=outDir,loadModel=loadModel,Plot=plot)
+    model_obj.forward(X_train,Y_train,X_test,Y_test,batchSize,numEpochs,datagen,noOfWorkers,outDir=outDir,loadModel=loadModel,Plot=plot)
 
 
 def __main__():
@@ -21,7 +21,9 @@ def __main__():
     parser.add_argument('--outDir', type=str, default='Data', help='Output directory')
     parser.add_argument('--inpDir', type=str, default=None, help='Directory containing  dataset')
     parser.add_argument('--loadModel', type=str, default=None, help='Directory containing model.hdf5')
-    parser.add_argument('--plot', type=bool, default=False, help='Path to saved model')
+    parser.add_argument('--plot', type=bool, default=True, help='Path to saved model')
+    parser.add_argument('--noOfWorkers', type=int, default=4, help='No. of workers for data augmentation')
+    parser.add_argument('--dataAug', type=bool, default=True, help='whether to use data augmentation')
     
     args = parser.parse_args()
 
@@ -36,7 +38,9 @@ def __main__():
     outDir = args.outDir
     inpDir = args.inpDir
     plot=args.plot
+    noOfWorkers=args.noOfWorkers
     loadModel = args.loadModel
-    main_run(inpDir,outDir,imgSize,momentum,lossfn,batchSize,numEpochs,noOfLayers,decay,learnRate,loadModel,plot)
+    dataAug=args.dataAug
+    main_run(inpDir,outDir,imgSize,momentum,lossfn,batchSize,numEpochs,noOfLayers,noOfWorkers,decay,learnRate,loadModel,plot,dataAug)
 
 __main__()
